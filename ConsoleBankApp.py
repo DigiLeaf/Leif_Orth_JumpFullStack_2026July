@@ -64,7 +64,24 @@ class Bank:
 class Account(ABC):
     # id,
     # balance
-    pass
+    def __init__(self):
+        self.id = None
+        self.balance = 0
+    def get_balance(self):
+        return self.balance
+    def deposit(self,amount):
+        if amount <= 0:
+            print("Deposit amount must be positive")
+            return
+        self.balance += amount
+        print(f"Deposited {amount}. New balance: {self.balance}")
+
+    def withdraw(self,amount):
+        if amount <= 0:
+            print("Withdraw amount must be positive")
+            return
+        self.balance -= amount
+        print(f"Withdrew {amount}. Remaining balance: {self.balance}")
 
 
 class AccountOperations(ABC):
@@ -82,29 +99,31 @@ class AccountOperations(ABC):
 
 
 class CheckingAccount(Account, AccountOperations):
-    def deposit(self):
-        pass
+    #def deposit(self):
+    #    pass
 
-    def withdraw(self):
-        pass
+    #def withdraw(self):
+    #    pass
 
-    def transfer(self):
+    #def transfer(self, targetAccount,amount)
         pass
 
     # get_interest_rate() // 1%
 
 
 class SavingsAccount(Account, AccountOperations):
-    def deposit(self):
-        pass
+    #def deposit(self):
+       pass
 
-    def withdraw(self):
-        pass
+    #def withdraw(self):
+    #    pass
 
-    def transfer(self):
-        pass
+    #def transfer(self):
+    #    pass
 
     # get_interest_rate() // 2%
+
+
 
 
 class Runner:
@@ -159,12 +178,67 @@ class Runner:
         print("Welcome customer, " + username)
         # todo: using switch-case present customer options'
         # view his account or accounts, withdraw, transfer, deposit
+        account = Account()
+        while True:
+            print("1. View Balance")
+            print("2. Deposit")
+            print("3. Withdraw")
+            print("4. Transfer")
+            print("5. Exit")
+            choice = input("Enter your choice: ")
+
+
+            match choice:
+                case "1":
+                    print("Here is the balance in your account")
+                    print(f"$ {account.get_balance()}")
+
+                case "2":
+                    #call deposit
+                    print("How much would you like to deposit?")
+                    amount = int(input("Enter the amount to deposit: "))
+                    account.deposit(amount)
+                case "3":
+                    #call withdraw
+                    print("How much would you like to withdraw?")
+                    amount = int(input("Enter the amount to withdraw: "))
+                    account.withdraw(amount)
+                case "4":
+                    print("Transfer selected")
+                    #call transfer()
+                case "5":
+                    break
+                case _:
+                    print("Invalid choice, try again")
 
     @staticmethod
     def admin_dashboard(login_result):
         print("Welcome admin")
         # todo: using switch-case present admin options
         # CRUD for customers, accounts etc
+
+        account = Account()
+        while True:
+            print("1. View All Customers")
+            print("2. Add Customer")
+            print("3. Update Customer")
+            print("4. Delete Customer")
+            print("5. Exit")
+            choice = input("Enter your choice: ")
+
+            match choice:
+                case "1":
+                    #view all customers
+                case "2":
+                    # Add cusomter
+                case "3":
+                    #update customer
+                case "4":
+                    #delete customers
+                case "5":
+                    break
+                case _:
+                    print("Invalid choice, try again")
 
     @staticmethod
     def login():
