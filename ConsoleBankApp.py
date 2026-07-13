@@ -180,6 +180,15 @@ class Runner:
                 return
         print("Customer not found")
 
+    @staticmethod
+    def deleteSelf(username):
+        for user in Runner.users:
+            if isinstance(user, Customer) and user.get_username() == username:
+                Runner.users.remove(user)
+                print(f"Your account ({username}) has been deleted.")
+                return
+        print("Account not found")
+
 
     @staticmethod
     def main():
@@ -213,7 +222,8 @@ class Runner:
             print("2. Deposit")
             print("3. Withdraw")
             print("4. Transfer")
-            print("5. Exit")
+            print("5. Delete My Account")
+            print("6. Exit")
             choice = input("Enter your choice: ")
 
 
@@ -236,6 +246,9 @@ class Runner:
                     print("Transfer selected")
                     #call transfer()
                 case "5":
+                    Runner.deleteSelf(username)
+                    return
+                case "6":
                     break
                 case _:
                     print("Invalid choice, try again")
@@ -246,11 +259,10 @@ class Runner:
         # todo: using switch-case present admin options
         # CRUD for customers, accounts etc
         while True:
-            print("1. View All Customers")
+            print("1. View All Customers/Accounts")
             print("2. Add Customer")
             print("3. Update Customer")
-            print("4. Delete Customer")
-            print("5. Exit")
+            print("4. Exit")
             choice = input("Enter your choice: ")
 
             match choice:
@@ -267,9 +279,6 @@ class Runner:
                     print("Please enter the customer's information")
                     Runner.updateCustomer()
                 case "4":
-                    pass
-                    #delete customers
-                case "5":
                     break
                 case _:
                     print("Invalid choice, try again")
