@@ -151,6 +151,35 @@ class Runner:
         Runner.users.append(customer1)
         Runner.users.append(customer2)
         Runner.users.append(customer3)
+    @staticmethod
+    def viewAllCustomers():
+        found_customer = False
+        for user in Runner.users:
+            if isinstance(user, Customer):
+                print(f"Username: {user.get_username()}")
+                found_customer = True
+        if not found_customer:
+            print("No customer's found")
+
+    @staticmethod
+    def addCustomer():
+        newCustomer = Customer()
+
+        newCustomer.set_username(input("Enter the customer's name: "))
+        newCustomer.set_password(input("Enter the customer's password: "))
+        Runner.users.append(newCustomer)
+
+    @staticmethod
+    def updateCustomer():
+        username = input("Enter the customer's username to update: ")
+        for user in Runner.users:
+            if isinstance(user, Customer) and user.get_username() == username:
+                newPassword = input("Enter the customer's  new password: ")
+                user.set_password(newPassword)
+                print(f"Password updated for {username}")
+                return
+        print("Customer not found")
+
 
     @staticmethod
     def main():
@@ -216,8 +245,6 @@ class Runner:
         print("Welcome admin")
         # todo: using switch-case present admin options
         # CRUD for customers, accounts etc
-
-        account = Account()
         while True:
             print("1. View All Customers")
             print("2. Add Customer")
@@ -229,11 +256,18 @@ class Runner:
             match choice:
                 case "1":
                     #view all customers
+                    print("Here is the list of current customers")
+                    Runner.viewAllCustomers();
                 case "2":
-                    # Add cusomter
+                    # Add customer
+                    print("Please enter the customer's information")
+                    Runner.addCustomer()
+
                 case "3":
-                    #update customer
+                    print("Please enter the customer's information")
+                    Runner.updateCustomer()
                 case "4":
+                    pass
                     #delete customers
                 case "5":
                     break
