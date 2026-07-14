@@ -28,6 +28,10 @@ class Account:
             "account_type": self.account_type
         }
 
+
+from datetime import datetime
+
+# Append this to models.py
 from datetime import datetime
 
 class Transaction:
