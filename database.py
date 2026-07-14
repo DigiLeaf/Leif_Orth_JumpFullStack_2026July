@@ -1,11 +1,17 @@
+import os
 import certifi
 from pymongo import MongoClient
+from dotenv import load_dotenv
 
-# Replace this string with your actual connection string from Atlas
-MONGO_URI = "mongodb+srv://leiforth01_db_user:4cP2N7mCS3aX3AEt@cluster0.7qguqoj.mongodb.net/"
+# Load the environment variables from the .env file
+load_dotenv()
 
-# Initialize the client with the SSL certificate fix
+# Pull the URI string dynamically using os.environ
+MONGO_URI = os.environ.get("MONGO_URI")
+
+if not MONGO_URI:
+    raise ValueError("CRITICAL ERROR: MONGO_URI is not set in the environment variables!")
+
+# Initialize the client securely
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
-
-# Select your database (Atlas will create this automatically if it doesn't exist)
 db = client["banking_db"]
