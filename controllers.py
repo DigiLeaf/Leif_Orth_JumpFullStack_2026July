@@ -105,3 +105,19 @@ def withdraw_money(account_id):
 
     # 4. Return the updated account details on success
     return jsonify(result.to_dict()), 200
+
+
+
+@accounts_bp.route('/accounts/<int:account_id>/transactions', methods=['GET'])
+def get_transaction_history(account_id):
+    # 1. Verify the account actually exists first
+    account = account_repo.get_by_id(account_id)
+    if not account:
+        return jsonify({"error": f"Account with ID {account_id} not found"}), 404
+
+    # 2. Fetch all transactions for this account from the repository
+    transactions = account_repo.get_transactions_by_account_id(account_id)
+
+    # 3. Serialize and return the list
+    serialized_txs = [tx.to_dict() for tx in transactions]
+    return jsonify(serialized_txs), 200
