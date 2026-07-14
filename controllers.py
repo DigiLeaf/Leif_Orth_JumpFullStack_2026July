@@ -54,3 +54,54 @@ def create_account():
 
     # 4. Return the created account and an HTTP 201 Created status code
     return jsonify(new_account.to_dict()), 201
+
+@accounts_bp.route('/accounts/<int:account_id>/deposit', methods=['POST'])
+def deposit_money(account_id):
+    data = request.get_json()
+
+    # 1. Validation: Ensure amount is provided and is a valid number
+    if not data or 'amount' not in data:
+        return jsonify({"error": "Missing required field: amount"}), 400
+
+    amount = data['amount']
+
+    # Simple business logic rule: no negative deposits!
+    if amount <= 0:
+        return jsonify({"error": "Deposit amount must be greater than zero"}), 400
+
+    # 2. Call the repository to update the balance
+    updated_account = account_repo.deposit(account_id, amount)
+
+    # 3. If account doesn't exist, return a 404
+    if not updated_account:
+        return jsonify({"error": f"Account with ID {account_id} not found"}), 404
+
+    # 4. Return the updated account details with a 200 OK
+    return jsonify(updated_account.to_dict()), 200
+
+
+@accounts_bp.route('/accounts/<int:account_id>/withdraw', methods=['POST'])
+def withdraw_money(account_id):
+    data = request.get_json()
+
+    # 1. Validation: Ensure amount is provided and valid
+    if not data or 'amount' not in data:
+        return jsonify({"error": "Missing required field: amount"}), 400
+
+    amount = data['amount']
+
+    if amount <= 0:
+        return jsonify({"error": "Withdrawal amount must be greater than zero"}), 400
+
+    # 2. Call the repository to attempt the withdrawal
+    result = account_repo.withdraw(account_id, amount)
+
+    # 3. Handle the repository responses
+    if result is None:
+        return jsonify({"error": f"Account with ID {account_id} not found"}), 404
+
+    if result == "INSUFFICIENT_FUNDS":
+        return jsonify({"error": "Insufficient funds to complete this withdrawal"}), 400
+
+    # 4. Return the updated account details on success
+    return jsonify(result.to_dict()), 200

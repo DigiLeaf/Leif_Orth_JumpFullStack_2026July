@@ -50,3 +50,29 @@ class AccountRepository:
 
         self._db.append(new_account)
         return new_account
+
+    def deposit(self, account_id: int, amount: float) -> Account:
+        """Finds an account, adds the amount to the balance, and returns it."""
+        account = self.get_by_id(account_id)
+        if account:
+            account.balance += amount
+            return account
+        return None
+
+    def withdraw(self, account_id: int, amount: float):
+        """Finds an account, validates funds, subtracts amount, and returns it.
+
+        Returns:
+            Account object if successful.
+            "INSUFFICIENT_FUNDS" if balance is too low.
+            None if account doesn't exist.
+        """
+        account = self.get_by_id(account_id)
+        if not account:
+            return None
+
+        if account.balance < amount:
+            return "INSUFFICIENT_FUNDS"
+
+        account.balance -= amount
+        return account
