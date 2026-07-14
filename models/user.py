@@ -1,13 +1,13 @@
 class User:
-    def __init__(self, user_id: int, name: str, email: str):
+    def __init__(self, user_id: int, username: str, email: str):
         self.id = user_id
-        self.name = name
+        self.username = username
         self.email = email
 
     def to_dict(self):
         """Helper to convert the object to a dictionary for JSON serialization."""
         return {
             "id": self.id,
-            "name": self.name,
+            "name": self.username,
             "email": self.email
         }
