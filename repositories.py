@@ -56,3 +56,12 @@ class AccountRepository:
         tx_id = len(self._transactions) + 1
         self._transactions.append(Transaction(tx_id, account_id, "WITHDRAWAL", amount))
         return account
+
+    def delete(self, account_id: int) -> bool:
+        """Removes an account from the list. Returns True if successful, False otherwise."""
+        account = self.get_by_id(account_id)
+        if account:
+            self._db.remove(account)
+            # Optional: You could also clean up self._transactions for this account here
+            return True
+        return False

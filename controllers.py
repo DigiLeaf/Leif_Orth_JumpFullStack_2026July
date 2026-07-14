@@ -12,7 +12,7 @@ account_service = AccountService()
 
 
 # ==========================================
-# USER ROUTES (The simple endpoint)
+# USER ROUTES
 # ==========================================
 @users_bp.route('/users', methods=['GET'])
 def get_users():
@@ -80,3 +80,16 @@ def get_transaction_history(account_id):
         return jsonify({"error": "Account not found"}), 404
 
     return jsonify([tx.to_dict() for tx in transactions]), 200
+
+
+@accounts_bp.route('/accounts/<int:account_id>', methods=['DELETE'])
+def delete_account(account_id):
+    # 1. Call the service layer to delete the account
+    success = account_service.delete_account(account_id)
+
+    # 2. If it wasn't found, return a 404
+    if not success:
+        return jsonify({"error": f"Account with ID {account_id} not found"}), 404
+
+    # 3. Standard REST practice: Return 204 No Content on successful deletion
+    return '', 204

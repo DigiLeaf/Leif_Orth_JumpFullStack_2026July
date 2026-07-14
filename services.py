@@ -45,3 +45,12 @@ class AccountService:
         if not account:
             return None
         return self.account_repo.get_transactions_by_account_id(account_id)
+
+    def delete_account(self, account_id: int) -> bool:
+        """Business logic for deleting an account."""
+        # Future business logic could go here:
+        # account = self.account_repo.get_by_id(account_id)
+        # if account and account.balance > 0:
+        #     raise ValueError("Cannot delete an account with a positive balance")
+
+        return self.account_repo.delete(account_id)

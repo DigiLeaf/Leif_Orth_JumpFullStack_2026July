@@ -31,9 +31,6 @@ class Account:
 
 from datetime import datetime
 
-# Append this to models.py
-from datetime import datetime
-
 class Transaction:
     def __init__(self, transaction_id: int, account_id: int, transaction_type: str, amount: float):
         self.id = transaction_id
