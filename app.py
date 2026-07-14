@@ -3,9 +3,9 @@ from controllers import users_bp, accounts_bp
 
 app = Flask(__name__)
 
-# Register blueprints
+# Register Blueprints with appropriate prefixes
 app.register_blueprint(users_bp)
-app.register_blueprint(accounts_bp, url_prefix='/api') # Adds the /api prefix
+app.register_blueprint(accounts_bp, url_prefix='/api')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
