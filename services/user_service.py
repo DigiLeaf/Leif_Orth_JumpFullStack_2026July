@@ -23,3 +23,11 @@ class UserService:
         # deleting a user if they don't block system constraints)
 
         return self.user_repo.delete(user_id)
+
+    def change_email(self, user_id: int, new_email: str):
+        """Validates input and updates a user's email address."""
+        if not new_email or "@" not in new_email:
+            raise ValueError("Invalid email address format")
+
+        # Call repository to perform the database operation
+        return self.user_repo.update_email(user_id, new_email)

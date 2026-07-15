@@ -39,3 +39,13 @@ class UserRepository:
         result = self.collection.delete_one({"_id": user_id})
         return result.deleted_count > 0
 
+    def update_email(self, user_id: int, new_email: str) -> User:
+        """Updates a user's email in MongoDB and returns the updated User object."""
+        # 1. Perform the update in MongoDB
+        self.collection.update_one({"_id": user_id}, {"$set": {"email": new_email}})
+
+        # 2. Fetch the updated document to construct and return our Model
+        updated_doc = self.collection.find_one({"_id": user_id})
+        if not updated_doc:
+            return None
+        return User(updated_doc["_id"], updated_doc["username"], updated_doc["email"])
