@@ -102,3 +102,9 @@ def transfer_money():
     except Exception as e:
         # Catch unexpected errors to prevent the API from completely crashing
         return jsonify({"error": "An unexpected server error occurred"}), 500
+
+
+@accounts_bp.route('/accounts', methods=['GET'])
+def get_all_accounts():
+    accounts = account_service.get_all_accounts()
+    return jsonify([account.to_dict() for account in accounts]), 200

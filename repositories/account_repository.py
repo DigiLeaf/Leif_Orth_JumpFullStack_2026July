@@ -93,3 +93,8 @@ class AccountRepository:
             self.transactions_col.delete_many({"account_id": account_id})
             return True
         return False
+    
+    def get_all(self):
+        """Fetches all account records from MongoDB."""
+        accounts_cursor = self.accounts_col.find()
+        return [Account(a["_id"], a["account_number"], a["balance"], a["account_type"]) for a in accounts_cursor]

@@ -85,3 +85,7 @@ class AccountService:
         ])
 
         return True
+    
+    def get_all_accounts(self):
+        """Business logic layer for retrieving all system accounts."""
+        return self.account_repo.get_all()
