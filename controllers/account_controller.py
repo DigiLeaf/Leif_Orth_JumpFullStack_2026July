@@ -60,3 +60,45 @@ def delete_account(account_id):
     if not success:
         return jsonify({"error": f"Account with ID {account_id} not found"}), 404
     return '', 204
+
+
+@accounts_bp.route('/accounts/transfer', methods=['POST'])
+def transfer_money():
+    """Endpoint to transfer money between two accounts using account numbers."""
+    data = request.get_json()
+
+    # 1. Validate that the request body contains the required fields
+    if not data:
+        return jsonify({"error": "Missing request body"}), 400
+
+    source_acc_num = data.get("source_account")
+    dest_acc_num = data.get("destination_account")
+    amount = data.get("amount")
+
+    if not source_acc_num or not dest_acc_num or amount is None:
+        return jsonify({"error": "Missing required fields: source_account, destination_account, amount"}), 400
+
+    # 2. Try to perform the transfer using the service layer
+    try:
+        # Convert amount to float to ensure we don't pass string numbers
+        transfer_amount = float(amount)
+
+        success = account_service.transfer(source_acc_num, dest_acc_num, transfer_amount)
+
+        if success:
+            return jsonify({
+                "message": "Transfer completed successfully!",
+                "details": {
+                    "source": source_acc_num,
+                    "destination": dest_acc_num,
+                    "amount_transferred": transfer_amount
+                }
+            }), 200
+
+    except ValueError as e:
+        # Catch validation errors (e.g., insufficient funds, negative amount, accounts not found)
+        return jsonify({"error": str(e)}), 400
+
+    except Exception as e:
+        # Catch unexpected errors to prevent the API from completely crashing
+        return jsonify({"error": "An unexpected server error occurred"}), 500

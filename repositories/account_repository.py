@@ -28,6 +28,16 @@ class AccountRepository:
         cursor = self.transactions_col.find({"account_id": account_id})
         return [Transaction(t["_id"], t["account_id"], t["transaction_type"], t["amount"]) for t in cursor]
 
+    def find_by_account_number(self, account_number: str):
+        """Finds an account document by its unique account_number string."""
+        return self.accounts_col.find_one({"account_number": account_number})
+
+    def update_balance(self, account_number: str, new_balance: float):
+        """Updates the balance of an account in MongoDB."""
+        self.accounts_col.update_one(
+            {"account_number": account_number},
+            {"$set": {"balance": new_balance}}
+        )
     def create(self, user_id: int, account_type: str) -> Account:
         # Dynamically find the highest ID in MongoDB to auto-increment it
         last_account = self.accounts_col.find_one(sort=[("_id", -1)])
