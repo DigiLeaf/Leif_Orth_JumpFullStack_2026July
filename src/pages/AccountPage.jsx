@@ -13,6 +13,8 @@ export default function Accounts() {
   const [searchId, setSearchId] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [customers, setCustomers] = useState([]);
+
 
 
   //User boilerplate info
@@ -106,11 +108,70 @@ export default function Accounts() {
       setLoading(false);
     }
   };
+  const handleGetAllCustomers = async () => {
+    setLoading(true);
+    setError('');
+    setAccounts([]);
+    setCustomers([]);
+
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
+      const token = localStorage.getItem('token');
+      
+      const response = await fetch(`${baseUrl}/users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
+
+      const data = await response.json();
+      const normalized = Array.isArray(data) ? data : (data.customers || data.data || []);
+      setCustomers(normalized);
+    } catch (err) {
+      setError(err.message || 'Error loading customers.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGetAllAccounts = async () => {
+    setLoading(true);
+    setError('');
+    setAccounts([]);
+    setCustomers([]);
+
+    try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:5000';
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${baseUrl}/api/accounts`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
+
+      const data = await response.json();
+      setAccounts(Array.isArray(data) ? data : (data.accounts || []));
+    } catch (err) {
+      setError(err.message || 'Error loading accounts.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
     setAccounts([]);
+    setCustomers([]);
     setSearchId('');
     setError('');
   };
@@ -249,8 +310,43 @@ export default function Accounts() {
                 >
                   {loading ? 'Searching...' : 'Search'}
                 </button>
-              </form>
+              </form>                    
+              <div style={{ display: 'flex', gap: '12px', marginTop: '1rem' }}>
+                  <button type="button" onClick={handleGetAllCustomers} disabled={loading} style={{ ...styles.actionButton, flex: 1, backgroundColor: '#2563EB' }}>
+                    {loading ? 'Processing...' : 'Fetch All Users'}
+                  </button>
+                  <button type="button" onClick={handleGetAllAccounts} disabled={loading} style={{ ...styles.actionButton, flex: 1, backgroundColor: '#2563EB' }}>
+                    {loading ? 'Processing...' : 'Fetch All Accounts'}
+                  </button>
+                </div>
+              {customers.length > 0 && (
+              <div style={styles.resultsContainer}>
+                <h3 style={styles.resultsTitle}>Global Customer Registry</h3>
+                <div style={styles.tableWrapper}>
+                  <table style={styles.table}>
+                    <thead>
+                      <tr>
+                        <th style={styles.tableHeader}>ID</th>
+                        <th style={styles.tableHeader}>Name</th>
+                        <th style={styles.tableHeader}>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customers.map((c, i) => (
+                        <tr key={c?.id ?? c?.customer_id ?? i}>
+                          <td style={styles.tableCell}>{c?.id ?? c?.customer_id ?? ''}</td>
+                          <td style={styles.tableCell}>{c?.name ?? c?.email ?? ''}</td>
+                          <td style={styles.tableCell}>{c?.email ?? ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                </div>
+)}
             </div>
+
+
 
             {/* Accounts Table Results */}
             {accounts.length > 0 && (
