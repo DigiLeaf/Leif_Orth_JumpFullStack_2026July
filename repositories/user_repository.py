@@ -1,39 +1,54 @@
 from database import db
 from models import User
+from werkzeug.security import generate_password_hash
+
 
 class UserRepository:
     def __init__(self):
-        # Target the 'users' collection in MongoDB
         self.collection = db["users"]
         self._seed_data_if_empty()
 
     def _seed_data_if_empty(self):
-        """Seeds initial data if the database collection is empty."""
+        """Seeds the database with users and secure hashed passwords if empty."""
         if self.collection.count_documents({}) == 0:
             initial_users = [
-                {"_id": 1, "username": "alice_dev", "email": "alice@example.com"},
-                {"_id": 2, "username": "bob_ops", "email": "bob@example.com"}
+                {
+                    "_id": 1,
+                    "username": "admin",
+                    "email": "admin@bank.com",
+                    "password_hash": generate_password_hash("supersecure123"),
+                    "role": "ROLE_ADMIN"
+                },
+                {
+                    "_id": 2,
+                    "username": "alice_dev",
+                    "email": "alice@example.com",
+                    "password_hash": generate_password_hash("alicepass"),
+                    "role": "ROLE_USER"
+                }
             ]
             self.collection.insert_many(initial_users)
 
     def get_all(self):
         users_cursor = self.collection.find()
-        # Map the Mongo documents back into our User models
-        return [User(user_id=u["_id"], username=u["username"], email=u["email"]) for u in users_cursor]
+        return [User(u["_id"], u["username"], u["email"], u.get("role", "ROLE_USER")) for u in users_cursor]
 
-    def create(self, username: str, email: str) -> User:
-        """Finds the highest current ID, increments it, and inserts a new user."""
+    def find_by_username(self, username: str):
+        """Looks up a raw database document by username."""
+        return self.collection.find_one({"username": username})
+
+    def create(self, username: str, email: str, role: str = "ROLE_USER") -> User:
         last_user = self.collection.find_one(sort=[("_id", -1)])
         new_id = last_user["_id"] + 1 if last_user else 1
 
         user_doc = {
             "_id": new_id,
             "username": username,
-            "email": email
+            "email": email,
+            "role": role
         }
         self.collection.insert_one(user_doc)
-        return User(new_id, username, email)
-
+        return User(new_id, username, email, role)
     def delete(self, user_id: int) -> bool:
         """Deletes a user from MongoDB. Returns True if successful, False otherwise."""
         result = self.collection.delete_one({"_id": user_id})
@@ -49,3 +64,4 @@ class UserRepository:
         if not updated_doc:
             return None
         return User(updated_doc["_id"], updated_doc["username"], updated_doc["email"])
+

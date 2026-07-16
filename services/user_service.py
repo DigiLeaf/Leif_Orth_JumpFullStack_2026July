@@ -1,5 +1,6 @@
 # Rewrite services/user_service.py to look like this:
 from repositories import UserRepository, AccountRepository
+from werkzeug.security import check_password_hash
 
 
 class UserService:
@@ -7,6 +8,17 @@ class UserService:
         self.user_repo = UserRepository()
         self.account_repo = AccountRepository()  # Inject Account Repo for cross-checking
 
+    def authenticate_user(self, username: str, password: str):
+        """Verifies credentials against MongoDB. Returns user document if valid, else None."""
+        user_doc = self.user_repo.find_by_username(username)
+        if not user_doc:
+            return None
+
+        # Securely check the submitted plain password against the stored database hash
+        if check_password_hash(user_doc["password_hash"], password):
+            return user_doc
+
+        return None
     def create_user(self, username: str, email: str):
         if not username or not email:
             raise ValueError("Username and email cannot be empty")

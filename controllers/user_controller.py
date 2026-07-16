@@ -41,3 +41,6 @@ def delete_user(user_id):
 
     # 3. Return 204 No Content on success
     return '', 204
+
+
+
