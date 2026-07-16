@@ -5,6 +5,7 @@ import ServicesPage from './pages/ServicesPage';
 import HomePage from './pages/HomePage';
 import ContactPage from './pages/ContactPage';
 import ResultsPage from './pages/ResultsPage';
+import Accounts from './pages/AccountPage';
 
 function App() {
   // Mock State for the dashboard
@@ -35,6 +36,9 @@ function App() {
     }
     if (currentPage === 'results') {
       return <ResultsPage />;
+    }
+    if (currentPage === 'accounts'){
+      return <Accounts />;
     }
 
     return (
