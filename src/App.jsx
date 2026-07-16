@@ -146,7 +146,10 @@ function App() {
     <div style={styles.container}>
       <Header onNavigate={setCurrentPage} currentPage={currentPage} />
 
-      <main style={currentPage === 'services' ? styles.pageContent : styles.dashboardGrid}>
+      <main style={(currentPage === 'home') || (currentPage === 'accounts') ||
+        (currentPage === 'services') || (currentPage === 'results') || (currentPage === 'contact')
+         ? styles.pageContent : styles.dashboardGrid
+        }>
         {renderContent()}
       </main>
 

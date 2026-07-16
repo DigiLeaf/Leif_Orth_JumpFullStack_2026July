@@ -210,7 +210,7 @@ const handleGetUserById = async (e) => {
         <form onSubmit={handleGetUserById} style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
           <input
             type="text"
-            placeholder="Enter User ID (e.g., 101)"
+            placeholder="Enter Account ID (e.g., 101)"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
             style={{
