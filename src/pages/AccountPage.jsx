@@ -148,9 +148,9 @@ export default function Accounts() {
     {/* 1. HERO HEADER */}
     <div style={styles.hero}>
       <p style={styles.eyebrow}>Secure Gateway</p>
-      <h1 style={styles.title}>Account Authorization</h1>
+      <h1 style={styles.title}>Account Sign In</h1>
       <p style={styles.subtitle}>
-        Verify roles and restrict system routing by authenticating through JWT claims mapped directly to MongoDB.
+        Sign in to access more features and view your account.
       </p>
     </div>
 
